@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>App</title>
+    <style>
+        body,html{height:100%;margin:0}
+        #loading{position:fixed;top:0;left:0;width:100%;height:100%;background:#6a11cb;color:#fff;display:flex;justify-content:center;align-items:center;flex-direction:column}
+        #website-frame{width:100%;height:100%;border:none}
+        #offline{position:fixed;top:0;left:0;width:100%;height:100%;background:#1a1a2e;color:#fff;display:none;justify-content:center;align-items:center;flex-direction:column;text-align:center}
+        .hide{display:none!important}
+        .spinner{width:50px;height:50px;border:4px solid rgba(255,255,255,0.3);border-top:4px solid white;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px}
+        .retry-btn{background:#fff;color:#333;border:none;padding:10px 25px;border-radius:20px;margin-top:20px;font-weight:bold;cursor:pointer}
+        @keyframes spin{to{transform:rotate(360deg)}}
+    </style>
+</head>
+<body>
+    <div id="loading"><div class="spinner"></div>Loading...</div>
+    <iframe id="website-frame"></iframe>
+    <div id="offline"><div>📡</div><h3>Tidak Ada Koneksi</h3><button class="retry-btn" onclick="reloadApp()">Coba Lagi</button></div>
+    <script>
+        const WEBSITE = 'https://donwayyy.vercel.app';
+        const loading = document.getElementById('loading');
+        const frame = document.getElementById('website-frame');
+        const offline = document.getElementById('offline');
+        
+        function loadApp() {
+            if (navigator.onLine) {
+                frame.src = WEBSITE;
+                setTimeout(() => loading.classList.add('hide'), 1500);
+            } else {
+                loading.classList.add('hide');
+                offline.style.display = 'flex';
+            }
+        }
+        
+        function reloadApp() {
+            offline.style.display = 'none';
+            loading.classList.remove('hide');
+            loadApp();
+        }
+        
+        window.onload = loadApp;
+        window.addEventListener('online', () => { if(offline.style.display === 'flex') reloadApp(); });
+        window.addEventListener('offline', () => { offline.style.display = 'flex'; });
+    </script>
+</body>
+</html>
